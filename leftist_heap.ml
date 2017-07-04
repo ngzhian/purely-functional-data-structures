@@ -130,6 +130,9 @@ module WeightBasedLeftistHeap = functor (Element : Ordered.ORDERED) -> (struct
       if rank a >= rank b
       then T (rank a + rank b + 1, x, a, b)
       else T (rank a + rank b + 1, x, b, a)
+    (** Exercise 3.4 c
+        Need to change this to a single top down pass
+     *)
     let rec merge h1 h2 = match (h1, h2) with
       | h, E | E, h -> h
       | T (_, x, a1, b1), T (_, y, a2, b2) ->
@@ -137,16 +140,16 @@ module WeightBasedLeftistHeap = functor (Element : Ordered.ORDERED) -> (struct
         then
           begin
             let r = merge b1 h2 in
-            if rank r > rank a1
-            then T (rank r + rank a1, x, r, a1)
-            else T (rank r + rank a1, x, a1, r)
+            if rank a1 >= rank r
+            then T (rank r + rank a1 + 1, x, a1, r)
+            else T (rank r + rank a1 + 1, x, r, a1)
           end
         else
           begin
             let r = merge b2 h1 in
-            if rank r > rank a2
-            then T (rank r + rank a2, x, r, a2)
-            else T (rank r + rank a2, x, a2, r)
+            if rank a2 >= rank r
+            then T (rank r + rank a2 + 1, y, a2, r)
+            else T (rank r + rank a2 + 1, y, r, a2)
           end
 
     let singleton x = T (1, x, E, E)
@@ -171,6 +174,6 @@ module WeightBasedLeftistHeap = functor (Element : Ordered.ORDERED) -> (struct
       | x::[] -> x
       | _ -> failwith "from_list2 fail"
 
-end : HEAP)
+end )
 
 module IntHeap = WeightBasedLeftistHeap(Ordered.OrderedInt)
